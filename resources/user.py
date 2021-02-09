@@ -15,12 +15,12 @@ from blacklists import BLACKLIST
 
 
 _user_parser = reqparse.RequestParser()
-_user_parser.add_argument('loginEmail',
+_user_parser.add_argument('email',
                           type=str,
                           required=True,
                           help="This field cannot be blank."
                           )
-_user_parser.add_argument('loginPassword',
+_user_parser.add_argument('lozinka',
                           type=str,
                           required=True,
                           help="This field cannot be blank."
@@ -61,9 +61,9 @@ class UserLogin(Resource):
     @cross_origin()
     def post(self):
         data=_user_parser.parse_args()
-        user = UserModel.find_by_email(data["loginEmail"])
+        user = UserModel.find_by_email(data["email"])
 
-        if user and safe_str_cmp(user.lozinka, data["loginPassword"]):
+        if user and safe_str_cmp(user.lozinka, data["lozinka"]):
             access_token=create_access_token(identity=user.id, fresh=True)
             refresh_token=create_refresh_token(identity=user.id)
             return {"message":"Uspješna prijava.",

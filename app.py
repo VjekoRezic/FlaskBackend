@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS, cross_origin
 
 from resources.user import UserRegister , UserLogin, UserLogout
+from resources.items import Item, Items
 from db import db
 
 app= Flask(__name__)
@@ -14,20 +15,13 @@ api= Api(app)
 
 jwt=JWTManager(app)
 
-
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    return decrypted_token['jti'] in BLACKLIST 
                                                                                                                                                                                                                                                                                                         
 
-
-
-
-
-
-
-
-
-
-
-
+api.add_resource(Items, "/proizvodi")
+api.add_resource(Item, "/proizvodi/<int:id>")
 api.add_resource(UserRegister, "/registracija")
 api.add_resource(UserLogin, "/prijava")
 api.add_resource(UserLogout, "/odjava")

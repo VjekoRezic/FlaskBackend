@@ -1,4 +1,5 @@
 from db import db
+from models.role import RoleModel
 
 class UserModel(db.Model):
     __tablename__="korisnici"
@@ -9,7 +10,8 @@ class UserModel(db.Model):
     ime=db.Column(db.String(100))
     prezime=db.Column(db.String(100))
     mobitel=db.Column(db.String(100))
-    roleID= db.Column(db.Integer)
+    roleID= db.Column(db.Integer, db.ForeignKey("role.id"))
+    rola=db.relation(RoleModel , backref="korisnici")
 
     def __init__(self, email, lozinka, ime, prezime, mobitel):
         self.email = email
