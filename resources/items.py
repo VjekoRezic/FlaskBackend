@@ -41,7 +41,7 @@ class Items(Resource):
                     "brendovi":brands,
                     "kategorije":kategorije,
                     "proizvodi":"Nema proizvoda koji odgovaraju vašem filteru."
-                }, 404
+                }, 200
 
             
 
@@ -53,7 +53,7 @@ class Items(Resource):
 
 
 
-            return rezultat
+            return rezultat, 200
 
                 
 

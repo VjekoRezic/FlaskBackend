@@ -41,12 +41,12 @@ class UserRegister(Resource):
     def post(self):
         data = _user_parser.parse_args()
 
-        if UserModel.find_by_email(data["loginEmail"]):
+        if UserModel.find_by_email(data["email"]):
             return {"message":"Korisnik s tim emailom već postoji"},400
         
         user = UserModel(**data)
         user.save_to_db()
-        newuser= UserModel.find_by_email(data["loginEmail"])
+        newuser= UserModel.find_by_email(data["email"])
         access_token= create_access_token(identity=newuser.id, fresh=True)
         refresh_token = create_refresh_token(newuser.id)
 
@@ -54,7 +54,10 @@ class UserRegister(Resource):
         return {
                 "message":"Korisnički račun uspješno stvoren",
                 "access_token": access_token,
-                "refresh_token": refresh_token
+                "refresh_token": refresh_token,
+                "user":[
+                        {"ime":user.ime}
+                    ]
             }, 201
 
 class UserLogin(Resource):
@@ -68,7 +71,10 @@ class UserLogin(Resource):
             refresh_token=create_refresh_token(identity=user.id)
             return {"message":"Uspješna prijava.",
                     "access_token": access_token,
-                    "refresh_token": refresh_token },200
+                    "refresh_token": refresh_token,
+                    "user":[
+                        {"ime":user.ime}
+                    ] },200
         return {"message": "Pogrešan email ili lozinka"}, 401 
 
 class UserLogout(Resource):
