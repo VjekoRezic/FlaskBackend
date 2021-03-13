@@ -55,9 +55,8 @@ class UserRegister(Resource):
                 "message":"Korisnički račun uspješno stvoren",
                 "access_token": access_token,
                 "refresh_token": refresh_token,
-                "user":[
-                        {"ime":user.ime}
-                    ]
+                "user":{"ime":user.ime}
+                    
             }, 201
 
 class UserLogin(Resource):
@@ -72,13 +71,14 @@ class UserLogin(Resource):
             return {"message":"Uspješna prijava.",
                     "access_token": access_token,
                     "refresh_token": refresh_token,
-                    "user":[
+                    "user":
                         {"ime":user.ime}
-                    ] },200
+                     },200
         return {"message": "Pogrešan email ili lozinka"}, 401 
 
 class UserLogout(Resource):
     @jwt_required
+    
     def post(self):
         jti = get_raw_jwt()["jti"]
         BLACKLIST.add(jti)
