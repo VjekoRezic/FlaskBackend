@@ -11,8 +11,8 @@ class ItemModel(db.Model):
     url_slike=db.Column(db.String(100))
     opis=db.Column(db.Text)
 
-    brandID=db.Column(db.Integer, db.ForeignKey("Brendovi.id"))
-    brandd=db.relation(BrandModel, backref="Brendovi")
+    brandID=db.Column(db.Integer, db.ForeignKey("brendovi.id"))
+    brandd=db.relation(BrandModel, backref="brendovi")
     kategorijaID=db.Column(db.Integer, db.ForeignKey("kategorije.id"))
     kategorija=db.relation(KategorijaModel, backref="kategorije")
 
@@ -122,4 +122,13 @@ def find_all(brandID, categoryID):
 def toSlug(ime):
     slug =ime.replace(' ', '-').lower()
     return slug 
-        
+
+def get_list_of_specific(ids):
+    data =  db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis).join(
+        BrandModel).join(
+            KategorijaModel).filter(ItemModel.id.in_(ids)).all()
+
+    result=[]
+    for x in data:
+            result.append(jsons(x))
+    return result

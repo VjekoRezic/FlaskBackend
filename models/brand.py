@@ -1,7 +1,7 @@
 from db import db
 
 class BrandModel(db.Model):
-    __tablename__="Brendovi"
+    __tablename__="brendovi"
 
     id=db.Column(db.Integer, primary_key=True)
     brand=db.Column(db.String(50))
