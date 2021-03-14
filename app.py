@@ -3,7 +3,7 @@ from flask_restful import Api, Resource
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS, cross_origin
 
-from resources.user import UserRegister , UserLogin, UserLogout
+from resources.user import UserRegister , UserLogin, UserLogout, Profil
 from resources.items import Item, Items
 from resources.kosarica import Kosarica
 from db import db
@@ -27,6 +27,7 @@ api.add_resource(UserRegister, "/registracija")
 api.add_resource(UserLogin, "/prijava")
 api.add_resource(UserLogout, "/odjava")
 api.add_resource(Kosarica,"/kosarica")
+api.add_resource(Profil, "/profil")
 
 
 

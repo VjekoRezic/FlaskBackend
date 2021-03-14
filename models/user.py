@@ -35,6 +35,16 @@ class UserModel(db.Model):
         db.session.delete(self)
         db.session.commit()
     
+    def update(userID, ime , prezime, email, mobitel):
+        
+        user= UserModel.query.filter_by(id=userID).first()
+        user.email=email
+        user.ime=ime
+        user.prezime=prezime
+        user.mobitel=mobitel
+        db.session.commit()
+        return {"message":"Uspješno ste promjenili podatke"}
+
     @classmethod
     def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
@@ -42,4 +52,6 @@ class UserModel(db.Model):
     @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first()
+
+    
     

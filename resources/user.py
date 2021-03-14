@@ -13,6 +13,30 @@ from flask_jwt_extended import (
 from models.user import UserModel
 from blacklists import BLACKLIST
 
+_profil_parser = reqparse.RequestParser()
+_profil_parser.add_argument('email',
+                          type=str,
+                          required=True,
+                          help="This field cannot be blank."
+                          )
+_profil_parser.add_argument('ime',
+                          type=str,
+
+
+                            )
+
+_profil_parser.add_argument('prezime',
+                          type=str,
+
+
+                            )
+
+_profil_parser.add_argument('mobitel',
+                          type=str,
+                            )
+                        
+
+
 
 _user_parser = reqparse.RequestParser()
 _user_parser.add_argument('email',
@@ -47,7 +71,7 @@ class UserRegister(Resource):
         user = UserModel(**data)
         user.save_to_db()
         newuser= UserModel.find_by_email(data["email"])
-        access_token= create_access_token(identity=newuser.id, fresh=True)
+        access_token= create_access_token(identity=newuser.id, fresh=True, expires_delta=3600)
         refresh_token = create_refresh_token(newuser.id)
 
 
@@ -83,3 +107,36 @@ class UserLogout(Resource):
         jti = get_raw_jwt()["jti"]
         BLACKLIST.add(jti)
         return {"message":"Uspješna odjava."},200
+
+
+
+class Profil(Resource):
+
+    @jwt_required
+    def get(self):
+        userID=get_jwt_identity()
+        user=UserModel.find_by_id(userID)
+        data={
+        "email":user.email,
+        "ime":user.ime,
+        "prezime":user.prezime,
+        "mobitel":user.mobitel}
+
+        return {"user":data}
+
+    @jwt_required
+    def put(self):
+        userID=get_jwt_identity()
+        data=_profil_parser.parse_args()
+        ime=data["ime"]
+        prezime=data["prezime"]
+        email=data["email"]
+        mobitel=data["mobitel"]
+        rezultat=UserModel.update(userID, ime, prezime, email, mobitel)
+        return rezultat
+
+
+
+        
+        
+
