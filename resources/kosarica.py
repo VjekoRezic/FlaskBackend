@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.kosaricaUser import KosaricaUser
-from models.kosaricaProizvod import KosaricaProizvod
+from models.kosaricaProizvod import KosaricaProizvod, get_povijest
 from models.items import get_list_of_specific
 import json
 
@@ -46,6 +46,14 @@ class Kosarica(Resource):
             
         except Exception as e:
             return(str(e))
+
+class Povijest(Resource):
+
+    @jwt_required
+    def get(self):
+        userID=get_jwt_identity()
+        rezultat= get_povijest(userID)
+        return {"povijest kupovine":rezultat}
 
 
 

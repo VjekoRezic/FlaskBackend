@@ -5,7 +5,7 @@ from flask_cors import CORS, cross_origin
 
 from resources.user import UserRegister , UserLogin, UserLogout, Profil
 from resources.items import Item, Items
-from resources.kosarica import Kosarica
+from resources.kosarica import Kosarica , Povijest
 from db import db
 
 app= Flask(__name__)
@@ -28,6 +28,7 @@ api.add_resource(UserLogin, "/prijava")
 api.add_resource(UserLogout, "/odjava")
 api.add_resource(Kosarica,"/kosarica")
 api.add_resource(Profil, "/profil")
+api.add_resource(Povijest, "/povijest")
 
 
 
