@@ -10,6 +10,7 @@ class ItemModel(db.Model):
     cijena=db.Column(db.Float(precision=2))
     url_slike=db.Column(db.String(100))
     opis=db.Column(db.Text)
+    active=db.Column(db.Integer)
 
     brandID=db.Column(db.Integer, db.ForeignKey("brendovi.id"))
     brandd=db.relation(BrandModel, backref="brendovi")
@@ -23,6 +24,7 @@ class ItemModel(db.Model):
         self.brandID=brandID
         self.kategorijaID=kategorijaID
         self.opis = opis
+        self.active=1
 
     
     def json(self):
@@ -74,14 +76,14 @@ def find_item_by_id(id):
         data = db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis).join(
             BrandModel).join(
                 KategorijaModel).filter(
-                ItemModel.id==id).first()
+                ItemModel.id==id).filter(ItemModel.active==1).first()
 
         return jsons(data)
 
 def find_all(brandID, categoryID):
     if (brandID != None and categoryID!=None):
         data = db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija,ItemModel.opis).join(
-            BrandModel).join(KategorijaModel).filter(BrandModel.id==brandID).filter(KategorijaModel.id==categoryID).all()
+            BrandModel).join(KategorijaModel).filter(ItemModel.active==1).filter(BrandModel.id==brandID).filter(KategorijaModel.id==categoryID).all()
          
         result=[]
         for x in data:
@@ -92,7 +94,7 @@ def find_all(brandID, categoryID):
             
     elif(brandID!=None and categoryID==None):
         data= db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis).join(
-            BrandModel).join(KategorijaModel).filter(BrandModel.id==brandID).all()
+            BrandModel).join(KategorijaModel).filter(ItemModel.active==1).filter(BrandModel.id==brandID).all()
         result=[]
         for x in data:
             result.append(jsons(x))
@@ -100,7 +102,7 @@ def find_all(brandID, categoryID):
                 
     elif(brandID==None and categoryID!=None):
         data = db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis).join(
-            BrandModel).join(KategorijaModel).filter(KategorijaModel.id==categoryID).all()
+            BrandModel).join(KategorijaModel).filter(ItemModel.active==1).filter(KategorijaModel.id==categoryID).all()
          
         result=[]
         for x in data:
@@ -112,7 +114,7 @@ def find_all(brandID, categoryID):
     else :
         data = db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis).join(
         BrandModel).join(
-            KategorijaModel).all()
+            KategorijaModel).filter(ItemModel.active==1).all()
         result=[]
         for x in data:
             result.append(jsons(x))
@@ -126,7 +128,7 @@ def toSlug(ime):
 def get_list_of_specific(ids):
     data =  db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis).join(
         BrandModel).join(
-            KategorijaModel).filter(ItemModel.id.in_(ids)).all()
+            KategorijaModel).filter(ItemModel.id.in_(ids)).filter(ItemModel.active==1).all()
 
     result=[]
     for x in data:

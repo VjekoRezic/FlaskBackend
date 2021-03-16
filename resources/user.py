@@ -97,6 +97,7 @@ class UserLogin(Resource):
         data=_user_parser.parse_args()
         user = UserModel.find_by_email(data["email"])
         rola= RoleModel.find_by_rolaID(user.roleID)
+        
         if (data["admin_required"]==0):
             if user and safe_str_cmp(user.lozinka, data["lozinka"]):
                 access_token=create_access_token(identity=user.id, fresh=True, expires_delta=trajanje)
@@ -111,7 +112,7 @@ class UserLogin(Resource):
             return {"message": "Pogrešan email ili lozinka"}, 401 
         
         if (data["admin_required"]==1):
-            if user and safe_str_cmp(user.lozinka, data["lozinka"]) and (user.roleID!=1 or user.roleID!=2):
+            if user and safe_str_cmp(user.lozinka, data["lozinka"]) and (user.roleID!=1 and user.roleID!=2):
                 return {"message":"Samo administratori imaju pristup!!!"}, 401
             elif user and safe_str_cmp(user.lozinka, data["lozinka"]) and (user.roleID==1 or user.roleID==2):
                 access_token=create_access_token(identity=user.id, fresh=True, expires_delta=trajanje)
