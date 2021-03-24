@@ -8,6 +8,7 @@ from functools import wraps
 from resources.user import UserRegister , UserLogin, UserLogout, Profil
 from resources.items import Item, Items, ItemUpdate
 from resources.kosarica import Kosarica , Povijest
+from resources.statistika import Stats
 from db import db
 
 app= Flask(__name__)
@@ -41,6 +42,7 @@ api.add_resource(Kosarica,"/kosarica")
 api.add_resource(Profil, "/profil")
 api.add_resource(Povijest, "/povijest")
 api.add_resource(ItemUpdate,"/proizvodi/<int:id>/update")
+api.add_resource(Stats, "/izvjestaj")
 
 
 

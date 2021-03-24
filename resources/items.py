@@ -7,6 +7,27 @@ from helpers import admin_required
 
 
 
+_item_update_parser=reqparse.RequestParser()
+_item_update_parser.add_argument("ime",
+                                 type=str )
+_item_update_parser.add_argument("cijena", type=float)
+_item_update_parser.add_argument("url_slike", type=str)
+_item_update_parser.add_argument("brandID", type=int)
+_item_update_parser.add_argument("kategorijaID",type=int)
+_item_update_parser.add_argument("opis")
+_item_update_parser.add_argument("delete", type=int)
+
+
+_item_post_parser=reqparse.RequestParser()
+_item_post_parser.add_argument("ime",type=str, required=True )
+_item_post_parser.add_argument("cijena", type=float, required=True)
+_item_post_parser.add_argument("url_slike", type=str, required=True)
+_item_post_parser.add_argument("brandID", type=int, required=True)
+_item_post_parser.add_argument("kategorijaID",type=int, required=True)
+_item_post_parser.add_argument("opis", required=True)
+
+
+
 
 
 class Item(Resource):
@@ -15,6 +36,8 @@ class Item(Resource):
         
         
         return item
+    
+
 
 
 
@@ -63,6 +86,20 @@ class Items(Resource):
         except Exception as e:
             print (str(e))
             return e, 103
+    
+    @admin_required()
+    def post(self):
+        data=_item_post_parser.parse_args()
+        
+        ime=data["ime"],
+        cijena=data["cijena"],
+        url_slike=data["url_slike"],
+        brandID=data["brandID"],
+        kategorijaID=data["kategorijaID"],
+        opis=data["opis"]
+            
+        novi_item = ItemModel.post(ime, cijena, url_slike, brandID,kategorijaID,opis)
+        return novi_item
 
 
 class ItemUpdate(Resource):
@@ -79,4 +116,21 @@ class ItemUpdate(Resource):
         
         
         return rezultat
+
+    @admin_required()
+    def put(self, id):
+        data=_item_update_parser.parse_args()
+        ime=data["ime"]
+        cijena=data["cijena"]
+        url_slike=data["url_slike"]
+        brandID=data["brandID"]
+        kategorijaID=data["kategorijaID"]
+        opis=data["opis"]
+        delete=data["delete"]
+        
+        updated= ItemModel.update(id, ime, cijena, url_slike, brandID, kategorijaID, opis, delete)
+        return updated
+
+   
+
 

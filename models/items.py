@@ -17,7 +17,7 @@ class ItemModel(db.Model):
     kategorijaID=db.Column(db.Integer, db.ForeignKey("kategorije.id"))
     kategorija=db.relation(KategorijaModel, backref="kategorije")
 
-    def __init__(self):
+    def __init__(self,ime, cijena, url_slike, brandID, kategorijaID, opis):
         self.ime=ime
         self.cijena=cijena
         self.url_slike=url_slike
@@ -38,6 +38,37 @@ class ItemModel(db.Model):
             "brand":brand,
             "kategorija":kategorija
             }
+    
+    def update(id, ime, cijena, url_slike, brandID, kategorijaID, opis, delete):
+        item=ItemModel.query.filter_by(id=id).first()
+        if ime!=None:
+            item.ime=ime
+        if cijena!=None:
+            item.cijena=cijena
+        if url_slike !=None:
+            item.url_slike=url_slike
+        if brandID !=None:
+            item.brandID=brandID
+        if kategorijaID !=None:
+            item.kategorijaID=kategorijaID
+        if opis!=None:
+            item.opis=opis
+        if delete==1:
+            item.active=0
+        db.session.commit() 
+        return {"message":"Uspješan update proizvoda"}, 200
+    
+    def post(ime, cijena, url_slike, brandID,kategorijaID,opis):
+        novi_item=ItemModel(ime=ime, cijena=cijena, url_slike=url_slike,brandID=brandID, kategorijaID=kategorijaID, opis=opis)
+        db.session.add(novi_item)
+        db.session.commit()
+        return {"message":"Uspješno ste dodali proizvod"}, 200
+    
+    def count_items():
+        items=db.session.query(ItemModel.id).filter(ItemModel.active==1).count()
+        return items
+
+
 
    # @staticmethod
    # def find_item_by_id(id):
@@ -134,3 +165,5 @@ def get_list_of_specific(ids):
     for x in data:
             result.append(jsons(x))
     return result
+
+

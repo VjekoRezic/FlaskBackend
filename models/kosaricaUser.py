@@ -26,4 +26,8 @@ class KosaricaUser(db.Model):
         db.session.commit()
         iddd=db.session.query(KosaricaUser.id).filter(KosaricaUser.korisnikID==korisnikid).order_by(KosaricaUser.id.desc()).first()
         return iddd[0]
+    
+    def count_narudzbe():
+        br=db.session.query(KosaricaUser.id).count()
+        return br
         

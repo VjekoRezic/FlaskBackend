@@ -45,6 +45,10 @@ class UserModel(db.Model):
         db.session.commit()
         return {"message":"Uspješno ste promjenili podatke"}
 
+    def count_users():
+        users=db.session.query(UserModel.id).filter(UserModel.roleID==3).count()
+        return users
+
     @classmethod
     def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
