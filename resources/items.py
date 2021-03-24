@@ -3,6 +3,8 @@ from flask import request
 from models.items import ItemModel, find_item_by_id, jsons, find_all
 from models.brand import BrandModel
 from models.kategorija import KategorijaModel
+from helpers import admin_required
+
 
 
 
@@ -63,5 +65,18 @@ class Items(Resource):
             return e, 103
 
 
+class ItemUpdate(Resource):
+    @admin_required()
+    def get(self, id):
+        item= find_item_by_id(id)
+        brands=BrandModel.get_all_brands()
+        kategorije=KategorijaModel.get_all_categories()
+        rezultat={
+                "proizvod":item,
+                "brendovi":brands,
+                "kategorije":kategorije
+                }
+        
+        
+        return rezultat
 
-       

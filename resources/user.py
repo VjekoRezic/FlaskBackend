@@ -98,7 +98,7 @@ class UserLogin(Resource):
         user = UserModel.find_by_email(data["email"])
         rola= RoleModel.find_by_rolaID(user.roleID)
         
-        if (data["admin_required"]==0):
+        if (data["admin_required"]==0) or (data["admin_required"]==None):
             if user and safe_str_cmp(user.lozinka, data["lozinka"]):
                 access_token=create_access_token(identity=user.id, fresh=True, expires_delta=trajanje)
                 refresh_token=create_refresh_token(identity=user.id)

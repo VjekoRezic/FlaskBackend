@@ -52,6 +52,15 @@ class UserModel(db.Model):
     @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first()
+    
+    @classmethod
+    def is_admin(cls, id):
+        user=cls.query.filter_by(id=id).first()
+        print (user.roleID)
+        if ((user.roleID==1) or (user.roleID==2)):
+            return 1
+        else:
+            return 0
 
     
     
