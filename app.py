@@ -5,6 +5,7 @@ from flask_cors import CORS, cross_origin
 from models.user import UserModel
 from functools import wraps
 
+from resources.search import Search
 from resources.user import UserRegister , UserLogin, UserLogout, Profil
 from resources.items import Item, Items, ItemUpdate
 from resources.kosarica import Kosarica , Povijest
@@ -43,6 +44,7 @@ api.add_resource(Profil, "/profil")
 api.add_resource(Povijest, "/povijest")
 api.add_resource(ItemUpdate,"/proizvodi/<int:id>/update")
 api.add_resource(Stats, "/izvjestaj")
+api.add_resource(Search, "/search")
 
 
 

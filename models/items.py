@@ -68,6 +68,23 @@ class ItemModel(db.Model):
         items=db.session.query(ItemModel.id).filter(ItemModel.active==1).count()
         return items
 
+    def search(ime):
+        ime="%{}%".format(ime)
+        
+        
+        items=db.session.query(ItemModel.id, ItemModel.ime).filter(ItemModel.active==1).filter(ItemModel.ime.ilike(ime)).order_by(ItemModel.ime).all()
+        proizvodi=[]
+        for x in items:
+            obj={
+                "id":x[0],
+                "ime":x[1]
+                }
+            proizvodi.append(obj)
+        
+        itemsObj={"proizvodi":proizvodi}
+        
+        return itemsObj
+
 
 
    # @staticmethod
