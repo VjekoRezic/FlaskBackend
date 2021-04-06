@@ -47,6 +47,9 @@ def get_povijest(uid):
      ).join(
          KategorijaModel
      ).filter(KosaricaUser.korisnikID==uid).order_by(KosaricaUser.id).all()
+    if data == []:
+        return {"message":"Nema prijašnjih kupnji!!"}
+
     rezultat= parser(data)
     return rezultat
 
