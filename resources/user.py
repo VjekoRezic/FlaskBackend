@@ -96,7 +96,8 @@ class UserLogin(Resource):
         trajanje= datetime.timedelta(minutes=60)
         data=_user_parser.parse_args()
         user = UserModel.find_by_email(data["email"])
-        rola= RoleModel.find_by_rolaID(user.roleID)
+        if user!=None:
+            rola= RoleModel.find_by_rolaID(user.roleID)
         
         if (data["admin_required"]==0) or (data["admin_required"]==None):
             if user and safe_str_cmp(user.lozinka, data["lozinka"]):

@@ -53,7 +53,7 @@ class Povijest(Resource):
     def get(self):
         userID=get_jwt_identity()
         rezultat= get_povijest(userID)
-        return {"povijest kupovine":rezultat}
+        return {"povijestKupovine":rezultat}
 
 
 

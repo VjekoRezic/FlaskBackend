@@ -48,7 +48,7 @@ def get_povijest(uid):
          KategorijaModel
      ).filter(KosaricaUser.korisnikID==uid).order_by(KosaricaUser.id).all()
     if data == []:
-        return {"message":"Nema prijašnjih kupnji!!"}
+        return []
 
     rezultat= parser(data)
     return rezultat
@@ -69,7 +69,7 @@ def parser(data):
                 "quantity":x[2],
                 "id":x[3],
                 "ime":x[4],
-                "cijena":x[5],
+                "cijena":'{0:.2f}'.format(float(x[5])),
                 "url_slike":x[6],
                 "brand":x[7],
                 "kategorija":x[8]
