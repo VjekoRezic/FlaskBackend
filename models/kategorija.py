@@ -8,11 +8,17 @@ class KategorijaModel(db.Model):
     kategorija=db.Column(db.String(100))
     
     def json(self):
+
+        slug = toSlug(self.kategorija)
         data={
             "kategorijaID":self.id,
-            "kategorija":self.kategorija
+            "kategorija":self.kategorija,
+            "slug": slug
         }
         return data
+    
+    
+
 
     @classmethod
     def get_category (cls, id):
@@ -26,3 +32,6 @@ class KategorijaModel(db.Model):
         for x in data:
             result.append(x.json())
         return result
+def toSlug(ime):
+    slug =ime.replace(' ', '-').lower()
+    return slug 

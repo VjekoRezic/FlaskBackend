@@ -36,7 +36,9 @@ class ItemModel(db.Model):
             "cijena":self.cijena,
             "url_slike":self.url_slike,
             "brand":brand,
-            "kategorija":kategorija
+            "kategorija":kategorija,
+            "brandID":self.brandID,
+            "kategorijaID":self.kategorijaID
             }
     
     def update(id, ime, cijena, url_slike, brandID, kategorijaID, opis, delete):
@@ -115,13 +117,15 @@ def jsons(data):
         "brand":data[4],
         "kategorija":data[5],
         "slug":slug,
-        "opis":data[6]
+        "opis":data[6],
+        "kategorijaID":data[7],
+        "brandID":data[8]
     }
     return json
 
 
 def find_item_by_id(id):
-        data = db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis).join(
+        data = db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis, ItemModel.kategorijaID, ItemModel.brandID).join(
             BrandModel).join(
                 KategorijaModel).filter(
                 ItemModel.id==id).filter(ItemModel.active==1).first()
@@ -130,7 +134,7 @@ def find_item_by_id(id):
 
 def find_all(brandID, categoryID):
     if (brandID != None and categoryID!=None):
-        data = db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija,ItemModel.opis).join(
+        data = db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija,ItemModel.opis, ItemModel.kategorijaID, ItemModel.brandID).join(
             BrandModel).join(KategorijaModel).filter(ItemModel.active==1).filter(BrandModel.id==brandID).filter(KategorijaModel.id==categoryID).all()
          
         result=[]
@@ -141,7 +145,7 @@ def find_all(brandID, categoryID):
 
             
     elif(brandID!=None and categoryID==None):
-        data= db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis).join(
+        data= db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis, ItemModel.kategorijaID, ItemModel.brandID).join(
             BrandModel).join(KategorijaModel).filter(ItemModel.active==1).filter(BrandModel.id==brandID).all()
         result=[]
         for x in data:
@@ -149,7 +153,7 @@ def find_all(brandID, categoryID):
         return result
                 
     elif(brandID==None and categoryID!=None):
-        data = db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis).join(
+        data = db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis, ItemModel.kategorijaID, ItemModel.brandID).join(
             BrandModel).join(KategorijaModel).filter(ItemModel.active==1).filter(KategorijaModel.id==categoryID).all()
          
         result=[]
@@ -160,7 +164,7 @@ def find_all(brandID, categoryID):
 
 
     else :
-        data = db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis).join(
+        data = db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis, ItemModel.kategorijaID, ItemModel.brandID).join(
         BrandModel).join(
             KategorijaModel).filter(ItemModel.active==1).all()
         result=[]
@@ -174,7 +178,7 @@ def toSlug(ime):
     return slug 
 
 def get_list_of_specific(ids):
-    data =  db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis).join(
+    data =  db.session.query(ItemModel.id, ItemModel.ime, ItemModel.url_slike, ItemModel.cijena, BrandModel.brand, KategorijaModel.kategorija, ItemModel.opis, ItemModel.kategorijaID, ItemModel.brandID).join(
         BrandModel).join(
             KategorijaModel).filter(ItemModel.id.in_(ids)).filter(ItemModel.active==1).all()
 

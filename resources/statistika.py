@@ -13,7 +13,7 @@ class Stats(Resource):
         users=UserModel.count_users()
         items=ItemModel.count_items()
         return {
-            "Broj narudžbi":narudzbe,
-            "Broj korisnika":users,
-            "Broj proizvoda":items
+            "broj_narudzbi":narudzbe,
+            "roj_korisnika":users,
+            "broj_proizvoda":items
         }, 200
