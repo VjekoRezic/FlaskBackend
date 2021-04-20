@@ -14,6 +14,6 @@ class Stats(Resource):
         items=ItemModel.count_items()
         return {
             "broj_narudzbi":narudzbe,
-            "roj_korisnika":users,
+            "broj_korisnika":users,
             "broj_proizvoda":items
         }, 200
