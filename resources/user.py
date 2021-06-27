@@ -9,7 +9,10 @@ from flask_jwt_extended import (
     get_raw_jwt,
     jwt_required
 )
+import hashlib
+import os 
 import datetime
+import binascii
 
 from models.user import UserModel
 from models.role import RoleModel
@@ -69,14 +72,15 @@ _user_parser.add_argument('admin_required',
 class UserRegister(Resource):
     def post(self):
         data = _user_parser.parse_args()
+        data["lozinka"]= (encrypt(data["lozinka"]))
         
         if UserModel.find_by_email(data["email"]):
             return {"message":"Korisnik s tim emailom već postoji"},400
-        
-        user = UserModel(**data)
+        trajanje= datetime.timedelta(minutes=60)
+        user = UserModel(data["email"], data["lozinka"], data["ime"], data["prezime"], data["mobitel"])
         user.save_to_db()
         newuser= UserModel.find_by_email(data["email"])
-        access_token= create_access_token(identity=newuser.id, fresh=True, expires_delta=3600)
+        access_token= create_access_token(identity=newuser.id, fresh=True, expires_delta=trajanje)
         refresh_token = create_refresh_token(newuser.id)
         rola= RoleModel.find_by_rolaID(3)
 
@@ -98,9 +102,13 @@ class UserLogin(Resource):
         user = UserModel.find_by_email(data["email"])
         if user!=None:
             rola= RoleModel.find_by_rolaID(user.roleID)
+            enpass = user.lozinka
+            
+
+
         
         if (data["admin_required"]==0) or (data["admin_required"]==None):
-            if user and safe_str_cmp(user.lozinka, data["lozinka"]):
+            if user and ( decrypt(enpass , data["lozinka"])==True):
                 access_token=create_access_token(identity=user.id, fresh=True, expires_delta=trajanje)
                 refresh_token=create_refresh_token(identity=user.id)
                 return {"message":"Uspješna prijava.",
@@ -113,9 +121,9 @@ class UserLogin(Resource):
             return {"message": "Pogrešan email ili lozinka"}, 401 
         
         if (data["admin_required"]==1):
-            if user and safe_str_cmp(user.lozinka, data["lozinka"]) and (user.roleID!=1 and user.roleID!=2):
+            if user and decrypt(enpass, data["lozinka"])==True and (user.roleID!=1 and user.roleID!=2):
                 return {"message":"Samo administratori imaju pristup!!!"}, 401
-            elif user and safe_str_cmp(user.lozinka, data["lozinka"]) and (user.roleID==1 or user.roleID==2):
+            elif user and decrypt(enpass, data["lozinka"])==True and (user.roleID==1 or user.roleID==2):
                 access_token=create_access_token(identity=user.id, fresh=True, expires_delta=trajanje)
                 refresh_token=create_refresh_token(identity=user.id)
                 return {"message":"Uspješna prijava.",
@@ -163,6 +171,52 @@ class Profil(Resource):
 
 
 
+
+def encrypt(lozinka):
+
+    salt = os.urandom(32)
+
+    key = hashlib.pbkdf2_hmac(
+        'sha256',
+        lozinka.encode('utf-8'),
+        salt, 
+        100000
+    )
+
+
+    storage =  salt + key
+    storage = binascii.b2a_hex(storage)
+
+
+    return storage
+
+def decrypt(encripted, lozinka):
+
+    encripted= binascii.a2b_hex(encripted)
+
+    salt = encripted[:32]
+    enpass= encripted[32:]
+    
+    #enpass = binascii.a2b_hex(enpass)
+    #salt = binascii.a2b_hex(salt)
+    
+    key = hashlib.pbkdf2_hmac(
+        'sha256',
+        lozinka.encode('utf-8'),
+        salt,
+        100000
+    )
+    
+    print (enpass)
+    print (key)
+
+    
+
+    if key == enpass:
+        return True
+    
+    else:
+        return False
         
         
 
